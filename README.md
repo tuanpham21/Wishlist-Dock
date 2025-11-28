@@ -6,16 +6,24 @@ A beautiful, embeddable wishlist widget that allows users to organize content it
 
 ### Core Functionality
 - **Dock Widget**: Floating button that expands into a panel with smooth animations
-- **Stack Management**: Create, edit, and delete collections with auto-generated covers
-- **Card Management**: Add, remove, and move cards between stacks
-- **Swipe Mode**: Tinder-like card browsing experience
+- **Stack Management**: Create, edit, rename, and delete collections with auto-generated covers
+  - Edit stack names and regenerate covers
+  - Search and filter stacks by name
+  - Real-time search with clear button
+- **Card Management**: Add, edit, remove, and move cards between stacks
+  - Full CRUD operations with forms
+  - Edit card details (name, description, cover image)
+  - Move cards between stacks with visual modal
+  - Image preview in edit form
+- **Swipe Mode**: Tinder-like card browsing experience with gesture controls
 
 ### Technical Features
-- **Optimistic UI Updates**: Instant UI feedback with background API sync
-- **Data Persistence**: LocalStorage support for offline functionality
+- **Optimistic UI Updates**: Instant UI feedback with background API sync and rollback on errors
+- **Data Persistence**: LocalStorage support for offline functionality with automatic sync
 - **Responsive Design**: Works seamlessly on desktop and mobile
 - **Theme Support**: Light and dark modes
-- **Embeddable**: Can be added to any website via Web Component
+- **Embeddable**: Can be added to any website via Web Component with Shadow DOM
+- **Search & Filter**: Real-time search functionality for stacks with empty states
 
 ## Tech Stack
 
@@ -70,7 +78,7 @@ function App() {
 }
 ```
 
-### Method 2: Web Component (Coming Soon)
+### Method 2: Web Component
 
 ```html
 <!-- Include the widget script -->
@@ -149,15 +157,16 @@ The app uses Zustand for state management with the following key features:
 With more time, I would add:
 
 1. **Testing**: Unit tests with Vitest, component tests with React Testing Library
-2. **Drag & Drop**: Full drag-and-drop reordering with @dnd-kit
-3. **Search/Filter**: Search within stacks and across all cards
-4. **Keyboard Shortcuts**: Navigate with keyboard for accessibility
+2. **Drag & Drop**: Full drag-and-drop reordering with @dnd-kit (library already installed)
+3. **Advanced Search**: Search within cards and filter by multiple criteria
+4. **Keyboard Shortcuts**: Navigate with keyboard for accessibility (Esc, Arrow keys, etc.)
 5. **Offline Support**: Service worker for full offline capability
-6. **Code Splitting**: Lazy load swipe mode and modals
-7. **i18n**: Internationalization support
-8. **Analytics**: Track user interactions
-9. **Share Functionality**: Share stacks with others
-10. **Real Backend**: Connect to actual API with authentication
+6. **Code Splitting**: Lazy load swipe mode and modals for better performance
+7. **i18n**: Internationalization support for multiple languages
+8. **Analytics**: Track user interactions and usage patterns
+9. **Share Functionality**: Share stacks with others via URL or export
+10. **Real Backend**: Connect to actual API with authentication and user accounts
+11. **Favorites**: Star/favorite important stacks and cards for quick access
 
 ## License
 

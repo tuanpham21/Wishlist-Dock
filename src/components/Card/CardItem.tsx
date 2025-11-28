@@ -9,9 +9,10 @@ interface CardItemProps {
   index: number;
   onDelete?: (cardId: string) => void;
   onMove?: (cardId: string) => void;
+  onEdit?: (cardId: string) => void;
 }
 
-export const CardItem = ({ card, index, onDelete, onMove }: CardItemProps) => {
+export const CardItem = ({ card, index, onDelete, onMove, onEdit }: CardItemProps) => {
   const [imageError, setImageError] = useState(false);
   const [showActions, setShowActions] = useState(false);
   
@@ -50,6 +51,15 @@ export const CardItem = ({ card, index, onDelete, onMove }: CardItemProps) => {
             animate={{ opacity: showActions ? 1 : 0 }}
             className="absolute top-2 right-2 flex gap-2"
           >
+            {onEdit && (
+              <button
+                onClick={() => onEdit(card.id)}
+                className="p-2 rounded-full bg-black/50 backdrop-blur-sm text-white/80 hover:text-white hover:bg-black/70 transition-all"
+                title="Edit card"
+              >
+                <Icons.Edit size={16} />
+              </button>
+            )}
             {onMove && (
               <button
                 onClick={() => onMove(card.id)}

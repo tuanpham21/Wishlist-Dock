@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { CardItem, MoveCardModal } from '../Card/CardItem';
 import { AddCardForm } from '../Card/AddCardForm';
+import { EditCardForm } from '../Card/EditCardForm';
 import { SwipeCards } from '../Card/SwipeCards';
 import { Button } from '../ui/Button';
 import { Icons } from '../ui/Icons';
@@ -25,9 +26,11 @@ export const StackView = () => {
   } = useWishlistStore();
   
   const [movingCardId, setMovingCardId] = useState<string | null>(null);
-  
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
+
   const activeStack = stacks.find(s => s.id === activeStackId);
   const stackCards = cards.filter(c => c.stackId === activeStackId);
+  const editingCard = editingCardId ? cards.find(c => c.id === editingCardId) : null;
   
   if (!activeStack) return null;
   
@@ -124,6 +127,7 @@ export const StackView = () => {
                   index={index}
                   onDelete={handleDeleteCard}
                   onMove={(cardId) => setMovingCardId(cardId)}
+                  onEdit={(cardId) => setEditingCardId(cardId)}
                 />
               ))}
             </AnimatePresence>
@@ -163,6 +167,16 @@ export const StackView = () => {
           <AddCardForm
             stackId={activeStackId}
             onClose={() => setIsAddingCard(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Edit Card Form */}
+      <AnimatePresence>
+        {editingCard && (
+          <EditCardForm
+            card={editingCard}
+            onClose={() => setEditingCardId(null)}
           />
         )}
       </AnimatePresence>
