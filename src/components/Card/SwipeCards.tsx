@@ -3,6 +3,7 @@ import { motion, useMotionValue, useTransform, AnimatePresence, type PanInfo } f
 import type { Card as CardType } from '../../types';
 import { Icons } from '../ui/Icons';
 import { Button } from '../ui/Button';
+import { useWishlistStore } from '../../store/wishlistStore';
 
 interface SwipeCardProps {
   cards: CardType[];
@@ -12,14 +13,15 @@ interface SwipeCardProps {
 }
 
 export const SwipeCards = ({ cards, currentIndex, onSwipe, onExit }: SwipeCardProps) => {
-  
+  const theme = useWishlistStore(state => state.theme);
+
   if (cards.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-        <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4">
-          <Icons.Layers className="w-10 h-10 text-white/30" />
+        <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${theme === 'dark' ? 'bg-white/5' : 'bg-gray-100'}`}>
+          <Icons.Layers className={`w-10 h-10 ${theme === 'dark' ? 'text-white/30' : 'text-gray-400'}`} />
         </div>
-        <p className="text-white/60 mb-4">No cards in this stack</p>
+        <p className={`mb-4 ${theme === 'dark' ? 'text-white/60' : 'text-gray-600'}`}>No cards in this stack</p>
         <Button variant="secondary" onClick={onExit}>
           Go Back
         </Button>
@@ -33,15 +35,17 @@ export const SwipeCards = ({ cards, currentIndex, onSwipe, onExit }: SwipeCardPr
   return (
     <div className="relative h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-white/10">
+      <div className={`flex items-center justify-between p-4 border-b ${theme === 'dark' ? 'border-white/10' : 'border-gray-200'}`}>
         <button
           onClick={onExit}
-          className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+          className={`flex items-center gap-2 transition-colors ${
+            theme === 'dark' ? 'text-white/70 hover:text-white' : 'text-gray-600 hover:text-gray-900'
+          }`}
         >
           <Icons.ChevronLeft size={20} />
           <span className="text-sm">Back</span>
         </button>
-        <div className="text-white/60 text-sm">
+        <div className={`text-sm ${theme === 'dark' ? 'text-white/60' : 'text-gray-600'}`}>
           {currentIndex + 1} / {cards.length}
         </div>
         <div className="w-16" /> {/* Spacer for centering */}
@@ -74,8 +78,8 @@ export const SwipeCards = ({ cards, currentIndex, onSwipe, onExit }: SwipeCardPr
               <div className="w-20 h-20 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
                 <Icons.Bookmark className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-white font-semibold text-lg mb-2">All caught up!</h3>
-              <p className="text-white/60 text-sm mb-6">You've seen all cards in this stack</p>
+              <h3 className={`font-semibold text-lg mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>All caught up!</h3>
+              <p className={`text-sm mb-6 ${theme === 'dark' ? 'text-white/60' : 'text-gray-600'}`}>You've seen all cards in this stack</p>
               <Button onClick={onExit}>Back to Stack</Button>
             </motion.div>
           )}

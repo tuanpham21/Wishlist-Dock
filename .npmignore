@@ -1,0 +1,53 @@
+# Source files (only include dist in package)
+src/
+public/
+index.html
+demo.html
+embed-example.html
+
+# Development configuration
+vite.config.ts
+tsconfig.json
+tsconfig.node.json
+eslint.config.js
+tailwind.config.js
+.env*
+
+# Development dependencies
+node_modules/
+.pnpm-store/
+
+# Build artifacts (redundant with dist/ in publish)
+dist/
+
+# Development logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+README.md
+CLAUDE.md
+docs/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+.temp/

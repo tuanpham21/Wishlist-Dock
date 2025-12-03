@@ -1,0 +1,68 @@
+{
+  "name": "@your-org/wishlist-dock",
+  "version": "1.0.0",
+  "description": "An embeddable React widget for organizing content into collections with optimistic UI updates",
+  "main": "dist/wishlist-dock.umd.js",
+  "module": "dist/wishlist-dock.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/wishlist-dock.es.js",
+      "require": "./dist/wishlist-dock.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "BUILD_TARGET=library NODE_ENV=production vite build",
+    "build:dev": "vite build",
+    "preview": "npm run build && vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "react",
+    "widget",
+    "embeddable",
+    "web-component",
+    "typescript",
+    "tailwind",
+    "framer-motion",
+    "zustand",
+    "collections",
+    "wishlist",
+    "ui-component"
+  ],
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com",
+    "url": "https://yourwebsite.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/wishlist-dock.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/wishlist-dock/issues"
+  },
+  "homepage": "https://github.com/your-org/wishlist-dock#readme",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

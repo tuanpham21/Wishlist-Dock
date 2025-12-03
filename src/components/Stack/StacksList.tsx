@@ -15,6 +15,7 @@ export const StacksList = () => {
     deleteStack,
     isCreatingStack,
     setIsCreatingStack,
+    theme,
   } = useWishlistStore();
 
   const [editingStackId, setEditingStackId] = useState<string | null>(null);
@@ -43,9 +44,9 @@ export const StacksList = () => {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-white/10 space-y-3">
+      <div className={`p-4 border-b ${theme === 'dark' ? 'border-white/10' : 'border-gray-200'} space-y-3`}>
         <div className="flex items-center justify-between">
-          <h2 className="text-white font-semibold text-lg">My Collections</h2>
+          <h2 className={`font-semibold text-lg ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>My Collections</h2>
           <Button
             variant="ghost"
             size="sm"
@@ -59,7 +60,7 @@ export const StacksList = () => {
         {/* Search Input */}
         {stacks.length > 0 && (
           <div className="relative">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40">
+            <div className={`absolute left-3 top-1/2 -translate-y-1/2 ${theme === 'dark' ? 'text-white/40' : 'text-gray-400'}`}>
               <Icons.Search size={16} />
             </div>
             <input
@@ -67,12 +68,18 @@ export const StacksList = () => {
               placeholder="Search stacks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all text-sm"
+              className={`w-full pl-10 pr-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all text-sm ${
+                theme === 'dark'
+                  ? 'bg-white/5 border border-white/10 text-white placeholder:text-white/40'
+                  : 'bg-gray-50 border border-gray-300 text-gray-900 placeholder:text-gray-400'
+              }`}
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                className={`absolute right-3 top-1/2 -translate-y-1/2 transition-colors ${
+                  theme === 'dark' ? 'text-white/40 hover:text-white' : 'text-gray-400 hover:text-gray-600'
+                }`}
               >
                 <Icons.X size={16} />
               </button>
@@ -89,11 +96,11 @@ export const StacksList = () => {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center h-full text-center py-12"
           >
-            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-              <Icons.Search className="w-8 h-8 text-white/30" />
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${theme === 'dark' ? 'bg-white/5' : 'bg-gray-100'}`}>
+              <Icons.Search className={`w-8 h-8 ${theme === 'dark' ? 'text-white/30' : 'text-gray-400'}`} />
             </div>
-            <h3 className="text-white/80 font-medium mb-2">No stacks found</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-xs">
+            <h3 className={`font-medium mb-2 ${theme === 'dark' ? 'text-white/80' : 'text-gray-700'}`}>No stacks found</h3>
+            <p className={`text-sm mb-6 max-w-xs ${theme === 'dark' ? 'text-white/50' : 'text-gray-500'}`}>
               Try searching with a different keyword
             </p>
             <Button
@@ -109,11 +116,11 @@ export const StacksList = () => {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center h-full text-center py-12"
           >
-            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-              <Icons.Layers className="w-8 h-8 text-white/30" />
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${theme === 'dark' ? 'bg-white/5' : 'bg-gray-100'}`}>
+              <Icons.Layers className={`w-8 h-8 ${theme === 'dark' ? 'text-white/30' : 'text-gray-400'}`} />
             </div>
-            <h3 className="text-white/80 font-medium mb-2">No stacks yet</h3>
-            <p className="text-white/50 text-sm mb-6 max-w-xs">
+            <h3 className={`font-medium mb-2 ${theme === 'dark' ? 'text-white/80' : 'text-gray-700'}`}>No stacks yet</h3>
+            <p className={`text-sm mb-6 max-w-xs ${theme === 'dark' ? 'text-white/50' : 'text-gray-500'}`}>
               Create your first stack to start organizing your content
             </p>
             <Button

@@ -14,6 +14,7 @@ interface EditStackFormProps {
 
 export const EditStackForm = ({ stack, onClose }: EditStackFormProps) => {
   const updateStack = useWishlistStore(state => state.updateStack);
+  const theme = useWishlistStore(state => state.theme);
   const [name, setName] = useState(stack.name);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -53,14 +54,22 @@ export const EditStackForm = ({ stack, onClose }: EditStackFormProps) => {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
-        className="w-full sm:max-w-sm bg-slate-900/95 border border-white/10 rounded-t-3xl sm:rounded-3xl p-6"
+        className={`w-full sm:max-w-sm rounded-t-3xl sm:rounded-3xl p-6 ${
+          theme === 'dark'
+            ? 'bg-slate-900/95 border border-white/10'
+            : 'bg-white border border-gray-200'
+        }`}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-white">Edit Stack</h2>
+          <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Edit Stack</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+            className={`p-2 rounded-full transition-colors ${
+              theme === 'dark'
+                ? 'hover:bg-white/10 text-white/60 hover:text-white'
+                : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
+            }`}
           >
             <Icons.X size={20} />
           </button>
@@ -74,7 +83,9 @@ export const EditStackForm = ({ stack, onClose }: EditStackFormProps) => {
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             <div className="absolute bottom-3 left-3">
-              <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
+              <div className={`w-10 h-10 rounded-xl backdrop-blur-sm flex items-center justify-center ${
+                theme === 'dark' ? 'bg-white/10' : 'bg-white/30'
+              }`}>
                 <Icons.Layers size={20} className="text-white" />
               </div>
             </div>

@@ -2,11 +2,11 @@ import type { Stack, Card } from '../types';
 import { delay } from '../utils';
 
 // Simulated network delay range (ms)
-const MIN_DELAY = 200;
-const MAX_DELAY = 800;
+const MIN_DELAY = 500;  // Min delay
+const MAX_DELAY = 2500;  // Max delay
 
 // Failure rate for testing optimistic UI rollback (0-1)
-const FAILURE_RATE = 0.05;
+const FAILURE_RATE = 0.2;  // API failure rate
 
 const getRandomDelay = () => Math.random() * (MAX_DELAY - MIN_DELAY) + MIN_DELAY;
 

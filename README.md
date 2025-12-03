@@ -23,6 +23,9 @@ A beautiful, embeddable wishlist widget that allows users to organize content it
 - **Responsive Design**: Works seamlessly on desktop and mobile
 - **Theme Support**: Light and dark modes
 - **Embeddable**: Can be added to any website via Web Component with Shadow DOM
+  - **Zero CSS Conflicts**: Complete style isolation
+  - **Multiple Instances**: Run several widgets independently
+  - **CDN Ready**: Host on any CDN or self-host
 - **Search & Filter**: Real-time search functionality for stacks with empty states
 
 ## Tech Stack
@@ -61,31 +64,46 @@ npm run dev
 npm run build
 ```
 
-## Embedding the Widget
+## 🚀 Quick Embedding
 
-### Method 1: React Component
+### For Any Website (Easy)
+
+Add this to your HTML:
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/@your-org/wishlist-dock/dist/wishlist-dock.es.js"></script>
+<wishlist-dock data-theme="dark"></wishlist-dock>
+```
+
+### For React Apps
+
+```bash
+npm install @your-org/wishlist-dock
+```
 
 ```tsx
-import { Dock } from './components';
+import '@your-org/wishlist-dock'
 
 function App() {
   return (
     <div>
       <YourContent />
-      <Dock defaultTheme="dark" />
+      <wishlist-dock data-theme="dark"></wishlist-dock>
     </div>
   );
 }
 ```
 
-### Method 2: Web Component
+### For Development
 
-```html
-<!-- Include the widget script -->
-<script src="https://your-cdn.com/wishlist-dock.js"></script>
+```bash
+git clone https://github.com/your-username/wishlist-dock.git
+cd wishlist-dock
+npm install
+npm run dev
 
-<!-- Add the widget to your page -->
-<wishlist-dock data-theme="dark"></wishlist-dock>
+# Test embedding
+# Open http://localhost:3000/demo.html
 ```
 
 ## Architecture

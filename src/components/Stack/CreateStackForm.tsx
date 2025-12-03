@@ -11,6 +11,7 @@ interface CreateStackFormProps {
 
 export const CreateStackForm = ({ onClose }: CreateStackFormProps) => {
   const createStack = useWishlistStore(state => state.createStack);
+  const theme = useWishlistStore(state => state.theme);
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,19 +42,27 @@ export const CreateStackForm = ({ onClose }: CreateStackFormProps) => {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
-        className="w-full sm:max-w-md bg-slate-900/95 border border-white/10 rounded-t-3xl sm:rounded-3xl p-6"
+        className={`w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 ${
+          theme === 'dark'
+            ? 'bg-slate-900/95 border border-white/10'
+            : 'bg-white border border-gray-200'
+        }`}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-white">Create New Stack</h2>
+          <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Create New Stack</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+            className={`p-2 rounded-full transition-colors ${
+              theme === 'dark'
+                ? 'hover:bg-white/10 text-white/60 hover:text-white'
+                : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
+            }`}
           >
             <Icons.X size={20} />
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="Stack Name"
@@ -66,8 +75,8 @@ export const CreateStackForm = ({ onClose }: CreateStackFormProps) => {
             error={error || undefined}
             autoFocus
           />
-          
-          <p className="text-xs text-white/40">
+
+          <p className={`text-xs ${theme === 'dark' ? 'text-white/40' : 'text-gray-500'}`}>
             A cover will be automatically generated for your stack
           </p>
           
