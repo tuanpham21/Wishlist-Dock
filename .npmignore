@@ -17,8 +17,8 @@ tailwind.config.js
 node_modules/
 .pnpm-store/
 
-# Build artifacts (redundant with dist/ in publish)
-dist/
+# Build artifacts (keep dist for npm package)
+# dist/ is included in package.json files field
 
 # Development logs
 *.log

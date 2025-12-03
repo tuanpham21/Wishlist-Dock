@@ -3,55 +3,56 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'path'
 
-// Development mode - standard React app
-// Production mode - library build for embedding
-const isProduction = process.env.NODE_ENV === 'production' && process.env.BUILD_TARGET === 'library'
+export default defineConfig(({ mode }) => {
+  const isLibrary = mode === 'library' || (process.env.BUILD_TARGET === 'library')
 
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  return {
+    plugins: [react(), tailwindcss()],
 
-  // Library mode configuration for embeddable widget
-  ...(isProduction ? {
-    build: {
+    // Define global constants for browser compatibility
+    define: {
+      'process.env.NODE_ENV': JSON.stringify('production')
+    },
+
+    build: isLibrary ? {
       lib: {
-        entry: resolve(__dirname, 'src/index-web-component.ts'),
+        entry: resolve(__dirname, 'src/index-library.ts'),
         name: 'WishlistDock',
         fileName: (format) => `wishlist-dock.${format}.js`,
         formats: ['es', 'umd']
       },
       rollupOptions: {
-        // Don't externalize anything - bundle everything for true embeddability
-        external: [],
         output: {
-          globals: {},
           assetFileNames: (assetInfo) => {
-            if (assetInfo.name?.includes('style.css')) return 'wishlist-dock.css'
+            if (assetInfo.name?.endsWith('.css')) return 'wishlist-dock.css'
             return assetInfo.name || 'asset'
           }
         }
       },
       cssCodeSplit: false,
       sourcemap: true,
-      minify: 'terser'
+      minify: 'terser',
+      emptyOutDir: true,
+      target: 'esnext'
+    } : {},
+
+    // Resolve configuration
+    resolve: {
+      alias: {
+        '@': resolve(__dirname, 'src')
+      }
+    },
+
+    // Development server configuration
+    server: {
+      port: 3000,
+      host: true
+    },
+
+    // Preview server for production build
+    preview: {
+      port: 4173,
+      host: true
     }
-  } : {}),
-
-  // Resolve configuration
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src')
-    }
-  },
-
-  // Development server configuration
-  server: {
-    port: 3000,
-    host: true
-  },
-
-  // Preview server for production build
-  preview: {
-    port: 4173,
-    host: true
   }
 })

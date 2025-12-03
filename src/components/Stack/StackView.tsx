@@ -10,7 +10,7 @@ import { Loading } from '../ui/Loading';
 const SwipeCards = lazy(() => import('../Card/SwipeCards').then(m => ({ default: m.SwipeCards })));
 const AddCardForm = lazy(() => import('../Card/AddCardForm').then(m => ({ default: m.AddCardForm })));
 const EditCardForm = lazy(() => import('../Card/EditCardForm').then(m => ({ default: m.EditCardForm })));
-const MoveCardModal = lazy(() => import('../Card/CardItem').then(m => ({ default: m.MoveCardModal })));
+const MoveCardModal = lazy(() => import('../Card/MoveCardModal').then(m => ({ default: m.MoveCardModal })));
 
 export const StackView = () => {
   const {

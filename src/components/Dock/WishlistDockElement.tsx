@@ -6,241 +6,191 @@ import { Dock } from './Dock';
 class WishlistDockElement extends HTMLElement {
   private root: ReactDOM.Root | null = null;
   private mountPoint: HTMLDivElement | null = null;
-  
+
   static get observedAttributes() {
     return ['data-theme'];
   }
-  
+
   connectedCallback() {
     // Create shadow DOM for style isolation
     const shadow = this.attachShadow({ mode: 'open' });
-    
+
     // Create mount point
     this.mountPoint = document.createElement('div');
     this.mountPoint.id = 'wishlist-dock-root';
-    
-    // Inject styles
-    const styles = document.createElement('style');
-    styles.textContent = this.getStyles();
-    
-    shadow.appendChild(styles);
-    shadow.appendChild(this.mountPoint);
-    
-    // Mount React app
-    this.root = ReactDOM.createRoot(this.mountPoint);
-    this.render();
-  }
-  
-  disconnectedCallback() {
-    if (this.root) {
-      this.root.unmount();
-      this.root = null;
-    }
-  }
-  
-  attributeChangedCallback(_name: string, oldValue: string, newValue: string) {
-    if (oldValue !== newValue) {
-      this.render();
-    }
-  }
-  
-  private render() {
-    if (!this.root) return;
-    
-    const theme = (this.getAttribute('data-theme') as 'light' | 'dark') || 'dark';
-    
-    this.root.render(
-      React.createElement(Dock, { defaultTheme: theme })
-    );
-  }
-  
-  private getStyles(): string {
-    // Include critical styles - in production this would be the compiled CSS
-    return `
+
+    // Load external CSS file into shadow DOM
+    const cssLink = document.createElement('link');
+    cssLink.rel = 'stylesheet';
+    cssLink.href = '/wishlist-dock.css';
+    shadow.appendChild(cssLink);
+
+    // Inject minimal essential styles
+    const style = document.createElement('style');
+    style.textContent = `
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-      
-      * {
+
+      *, ::before, ::after {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
       }
-      
+
       #wishlist-dock-root {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         line-height: 1.5;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
-      
-      /* Tailwind-like utilities */
-      .fixed { position: fixed; }
-      .absolute { position: absolute; }
-      .relative { position: relative; }
-      .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
-      
-      .flex { display: flex; }
-      .grid { display: grid; }
-      .hidden { display: none; }
-      .block { display: block; }
-      .inline-flex { display: inline-flex; }
-      
-      .flex-col { flex-direction: column; }
-      .flex-1 { flex: 1 1 0%; }
-      .flex-shrink-0 { flex-shrink: 0; }
-      
-      .items-center { align-items: center; }
-      .items-end { align-items: flex-end; }
-      .justify-center { justify-content: center; }
-      .justify-between { justify-content: space-between; }
-      
-      .gap-2 { gap: 0.5rem; }
-      .gap-3 { gap: 0.75rem; }
-      .gap-4 { gap: 1rem; }
-      .gap-8 { gap: 2rem; }
-      
-      .p-2 { padding: 0.5rem; }
-      .p-3 { padding: 0.75rem; }
-      .p-4 { padding: 1rem; }
-      .p-6 { padding: 1.5rem; }
-      .p-8 { padding: 2rem; }
-      
-      .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
-      .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
-      .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-      
-      .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
-      .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-      .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
-      .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
-      .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
-      
-      .m-0 { margin: 0; }
-      .mb-1 { margin-bottom: 0.25rem; }
-      .mb-2 { margin-bottom: 0.5rem; }
-      .mb-3 { margin-bottom: 0.75rem; }
-      .mb-4 { margin-bottom: 1rem; }
-      .mb-6 { margin-bottom: 1.5rem; }
-      .mt-1 { margin-top: 0.25rem; }
-      .mt-4 { margin-top: 1rem; }
-      
-      .w-full { width: 100%; }
-      .h-full { height: 100%; }
-      .min-w-0 { min-width: 0; }
-      
-      .overflow-hidden { overflow: hidden; }
-      .overflow-y-auto { overflow-y: auto; }
-      
-      .rounded-full { border-radius: 9999px; }
-      .rounded-xl { border-radius: 0.75rem; }
-      .rounded-2xl { border-radius: 1rem; }
-      .rounded-3xl { border-radius: 1.5rem; }
-      
-      .border { border-width: 1px; }
-      .border-b { border-bottom-width: 1px; }
-      
-      .text-center { text-align: center; }
-      .text-left { text-align: left; }
-      
-      .text-xs { font-size: 0.75rem; line-height: 1rem; }
-      .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-      .text-base { font-size: 1rem; line-height: 1.5rem; }
-      .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
-      .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-      
-      .font-medium { font-weight: 500; }
-      .font-semibold { font-weight: 600; }
-      .font-bold { font-weight: 700; }
-      
-      .text-white { color: white; }
-      
-      .truncate {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      
-      .line-clamp-1 {
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
-      }
-      
-      .line-clamp-2 {
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-      }
-      
-      .line-clamp-3 {
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
-      }
-      
-      .cursor-pointer { cursor: pointer; }
-      .cursor-grab { cursor: grab; }
-      .cursor-grabbing { cursor: grabbing; }
-      
-      .transition-all { transition: all 0.2s ease; }
-      .transition-colors { transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease; }
-      .transition-opacity { transition: opacity 0.2s ease; }
-      .transition-transform { transition: transform 0.2s ease; }
-      
-      .duration-200 { transition-duration: 200ms; }
-      .duration-300 { transition-duration: 300ms; }
-      .duration-500 { transition-duration: 500ms; }
-      
-      .opacity-0 { opacity: 0; }
-      .opacity-25 { opacity: 0.25; }
-      .opacity-50 { opacity: 0.5; }
-      .opacity-75 { opacity: 0.75; }
-      
-      .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-      .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
-      .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
-      
-      .backdrop-blur-sm { backdrop-filter: blur(4px); }
-      .backdrop-blur-xl { backdrop-filter: blur(24px); }
-      
-      .z-10 { z-index: 10; }
-      .z-50 { z-index: 50; }
-      
-      .resize-none { resize: none; }
-      
-      @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
-      
-      .animate-spin { animation: spin 1s linear infinite; }
-      
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      
-      ::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 3px;
-      }
-      
-      ::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.3);
-      }
+
+      /* Tailwind-like utilities for the widget */
+      .fixed { position: fixed !important; }
+      .absolute { position: absolute !important; }
+      .relative { position: relative !important; }
+      .inset-0 { top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important; }
+      .bottom-0 { bottom: 0 !important; }
+      .right-0 { right: 0 !important; }
+      .left-0 { left: 0 !important; }
+      .top-0 { top: 0 !important; }
+      .z-50 { z-index: 50 !important; }
+      .z-40 { z-index: 40 !important; }
+      .z-50 { z-index: 50 !important; }
+      .z-\\[9999\\] { z-index: 9999 !important; }
+      .z-\\[9998\\] { z-index: 9998 !important; }
+
+      .flex { display: flex !important; }
+      .grid { display: grid !important; }
+      .hidden { display: none !important; }
+      .block { display: block !important; }
+      .inline-flex { display: inline-flex !important; }
+
+      .flex-col { flex-direction: column !important; }
+      .flex-1 { flex: 1 1 0% !important; }
+      .flex-shrink-0 { flex-shrink: 0 !important; }
+
+      .items-center { align-items: center !important; }
+      .items-end { align-items: flex-end !important; }
+      .items-start { align-items: flex-start !important; }
+      .justify-center { justify-content: center !important; }
+      .justify-between { justify-content: space-between !important; }
+      .justify-end { justify-content: flex-end !important; }
+
+      .gap-2 { gap: 0.5rem !important; }
+      .gap-3 { gap: 0.75rem !important; }
+      .gap-4 { gap: 1rem !important; }
+      .gap-6 { gap: 1.5rem !important; }
+      .gap-8 { gap: 2rem !important; }
+
+      .w-14 { width: 3.5rem !important; }
+      .h-14 { height: 3.5rem !important; }
+      .w-full { width: 100% !important; }
+      .h-full { height: 100% !important; }
+      .h-\\[85vh\\] { height: 85vh !important; }
+      .h-\\[600px\\] { height: 600px !important; }
+      .min-w-\\[22px\\] { min-width: 22px !important; }
+      .h-\\[22px\\] { height: 22px !important; }
+
+      .p-2 { padding: 0.5rem !important; }
+      .p-4 { padding: 1rem !important; }
+      .p-6 { padding: 1.5rem !important; }
+      .px-1\\.5 { padding-left: 0.375rem !important; padding-right: 0.375rem !important; }
+      .px-4 { padding-left: 1rem !important; padding-right: 1rem !important; }
+      .py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+
+      .m-0 { margin: 0 !important; }
+      .mb-6 { margin-bottom: 1.5rem !important; }
+      .mr-2 { margin-right: 0.5rem !important; }
+      .ml-2 { margin-left: 0.5rem !important; }
+
+      .rounded-full { border-radius: 9999px !important; }
+      .rounded-3xl { border-radius: 1.5rem !important; }
+      .rounded-xl { border-radius: 0.75rem !important; }
+      .rounded-t-3xl { border-top-left-radius: 1.5rem !important; border-top-right-radius: 1.5rem !important; }
+
+      .bg-white\\/95 { background-color: rgba(255, 255, 255, 0.95) !important; }
+      .bg-slate-900\\/95 { background-color: rgba(15, 23, 42, 0.95) !important; }
+      .bg-violet-500 { background-color: #8b5cf6 !important; }
+      .bg-purple-600 { background-color: #9333ea !important; }
+      .bg-red-400\\/20 { background-color: rgba(248, 113, 113, 0.2) !important; }
+      .bg-red-500\\/20 { background-color: rgba(239, 68, 68, 0.2) !important; }
+
+      .text-white { color: white !important; }
+      .text-white\\/60 { color: rgba(255, 255, 255, 0.6) !important; }
+      .text-white\\/50 { color: rgba(255, 255, 255, 0.5) !important; }
+      .text-gray-400 { color: #9ca3af !important; }
+      .text-gray-600 { color: #4b5563 !important; }
+      .text-gray-500 { color: #6b7280 !important; }
+      .text-gray-900 { color: #111827 !important; }
+      .text-violet-600 { color: #8b5cf6 !important; }
+      .text-red-400 { color: #f87171 !important; }
+      .text-red-300 { color: #fca5a5 !important; }
+      .text-xs { font-size: 0.75rem !important; }
+      .text-sm { font-size: 0.875rem !important; }
+      .text-xl { font-size: 1.25rem !important; }
+      .font-semibold { font-weight: 600 !important; }
+      .font-bold { font-weight: 700 !important; }
+
+      .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important; }
+      .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important; }
+      .shadow-violet-500\\/25 { box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.25) !important; }
+      .shadow-black\\/20 { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2) !important; }
+
+      .border { border-width: 1px !important; }
+      .border-white\\/10 { border-color: rgba(255, 255, 255, 0.1) !important; }
+      .border-gray-200 { border-color: #e5e7eb !important; }
+
+      .backdrop-blur-xl { backdrop-filter: blur(24px) !important; }
+      .transition-colors { transition-property: color, background-color, border-color !important; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important; transition-duration: 150ms !important; }
+      .transition-all { transition-property: all !important; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important; transition-duration: 150ms !important; }
+
+      .hover\\:bg-gray-100:hover { background-color: #f3f4f6 !important; }
+      .hover\\:bg-gray-200:hover { background-color: #e5e7eb !important; }
+      .hover\\:bg-white\\/10:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
+      .hover\\:text-gray-600:hover { color: #4b5563 !important; }
+      .hover\\:text-white:hover { color: white !important; }
+      .hover\\:scale-110:hover { transform: scale(1.1) !important; }
+      .hover\\:opacity-75:hover { opacity: 0.75 !important; }
+      .hover\\:border-white\\/20:hover { border-color: rgba(255, 255, 255, 0.2) !important; }
+
+      .group:hover .group-hover\\:text-white { color: white !important; }
+      .group:hover .group-hover\\:opacity-75 { opacity: 0.75 !important; }
     `;
+
+    // Add elements to shadow DOM
+    shadow.appendChild(style);
+    shadow.appendChild(this.mountPoint);
+
+    // Mount React app
+    this.root = ReactDOM.createRoot(this.mountPoint);
+    this.render();
+  }
+
+  disconnectedCallback() {
+    if (this.root) {
+      this.root.unmount();
+      this.root = null;
+    }
+  }
+
+  attributeChangedCallback(_name: string, oldValue: string, newValue: string) {
+    if (oldValue !== newValue) {
+      this.render();
+    }
+  }
+
+  private render() {
+    if (!this.root) return;
+
+    const theme = (this.getAttribute('data-theme') as 'light' | 'dark') || 'dark';
+
+    this.root.render(
+      React.createElement(Dock, { defaultTheme: theme })
+    );
   }
 }
 
 // Register the custom element
-if (!customElements.get('wishlist-dock')) {
+if (typeof customElements !== 'undefined' && !customElements.get('wishlist-dock')) {
   customElements.define('wishlist-dock', WishlistDockElement);
 }
 

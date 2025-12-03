@@ -3,9 +3,6 @@
  * This file registers the custom element and exports the component class
  */
 
-// Import styles (Tailwind CSS)
-import './styles/main.css';
-
 // Import the Web Component (it auto-registers itself)
 import './components/Dock/WishlistDockElement';
 

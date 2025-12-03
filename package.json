@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:lib": "BUILD_TARGET=library NODE_ENV=production vite build && cp public/index.html dist/index.html",
-    "build:package": "BUILD_TARGET=library NODE_ENV=production vite build && npm run build:types && cp public/index.html dist/index.html",
+    "build:lib": "vite build --mode library",
+    "build:lib:prod": "BUILD_TARGET=library NODE_ENV=production vite build",
+    "build:package": "BUILD_TARGET=library NODE_ENV=production vite build && npm run build:types",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist --moduleResolution node",
     "lint": "eslint .",
     "preview": "vite preview",
