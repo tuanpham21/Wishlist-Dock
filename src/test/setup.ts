@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import { cleanup } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
 
+
 // Cleanup after each test
 afterEach(() => {
   cleanup()
@@ -16,10 +17,10 @@ const localStorageMock = {
   clear: vi.fn(),
 }
 
-global.localStorage = localStorageMock as any
+;(globalThis as any).localStorage = localStorageMock
 
 // Mock IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
+;(globalThis as any).IntersectionObserver = class IntersectionObserver {
   constructor() {}
   disconnect() {}
   observe() {}

@@ -4,7 +4,10 @@ A beautiful, embeddable wishlist widget that allows users to organize content it
 
 ## 📑 Table of Contents
 
+- [Live Demo](#live-demo)
 - [Setup Instructions](#setup-instructions)
+- [Testing](#testing)
+- [Deployment](#deployment)
 - [How to Embed the Widget](#how-to-embed-the-widget)
 - [Architecture Decisions](#architecture-decisions)
 - [Trade-offs](#trade-offs)
@@ -12,6 +15,21 @@ A beautiful, embeddable wishlist widget that allows users to organize content it
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Project Summary](#-project-summary)
+
+---
+
+## 🚀 Live Demo
+
+**[View Live Demo](https://wishlist-dock-ic90ffw56-tuanbmbsoftxenditcos-projects.vercel.app/)**
+
+A fully functional demo of the Wishlist Dock widget showcasing all features including:
+- Stack management (create, edit, delete)
+- Card operations (add, move, delete)
+- Swipe mode for browsing
+- Theme switching (dark/light)
+- Keyboard shortcuts (Cmd/Ctrl+K to toggle)
+- Search functionality
+- Offline support with localStorage
 
 ---
 
@@ -66,6 +84,59 @@ npm run build:lib # Build library version
 npm run preview  # Preview production build
 npm run lint     # Run ESLint
 ```
+
+## 🧪 Testing
+
+The project includes a comprehensive test suite using Vitest and React Testing Library:
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests in watch mode (for development)
+pnpm test --watch
+
+# Run tests with coverage report
+pnpm test:coverage
+
+# Run tests with visual UI interface
+pnpm test:ui
+```
+
+### Test Coverage
+- **Store Tests**: Zustand state management with optimistic updates
+- **Component Tests**: React components with user interactions
+- **Error Handling**: API failures and rollback scenarios
+- **Accessibility**: Keyboard navigation and ARIA attributes
+
+**Total**: 25 tests passing ✅
+
+## 🚀 Deployment
+
+### Deploy to Vercel (Recommended)
+
+1. Install Vercel CLI:
+```bash
+pnpm add -D vercel
+```
+
+2. Deploy to production:
+```bash
+pnpm deploy
+```
+
+The project includes:
+- `vercel.json` configuration for optimal deployment
+- Automatic build optimization
+- CDN distribution for global performance
+
+### Alternative Deployment Options
+
+The build outputs to `dist/` directory and can be deployed to:
+- Netlify
+- GitHub Pages
+- AWS S3 + CloudFront
+- Any static hosting provider
 
 ## How to Embed the Widget
 

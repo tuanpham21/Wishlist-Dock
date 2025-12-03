@@ -18,7 +18,6 @@ vi.mock('../api', () => ({
 describe('WishlistStore', () => {
   beforeEach(() => {
     // Reset store to initial state
-    const store = useWishlistStore.getState()
     useWishlistStore.setState({
       stacks: [],
       cards: [],
@@ -89,7 +88,7 @@ describe('WishlistStore', () => {
 
   describe('Stack Actions - Optimistic Updates', () => {
     it('should create stack with optimistic update', async () => {
-      vi.mocked(api.createStack).mockResolvedValue()
+      vi.mocked(api.createStack).mockImplementation((stack) => Promise.resolve(stack))
 
       const { createStack } = useWishlistStore.getState()
 
@@ -134,7 +133,7 @@ describe('WishlistStore', () => {
     })
 
     it('should delete stack with optimistic update', async () => {
-      vi.mocked(api.deleteStack).mockResolvedValue()
+      vi.mocked(api.deleteStack).mockResolvedValue(undefined)
 
       // Add a stack first
       const stackId = 'test-stack-id'
@@ -205,7 +204,7 @@ describe('WishlistStore', () => {
 
   describe('Card Actions - Optimistic Updates', () => {
     it('should create card with optimistic update', async () => {
-      vi.mocked(api.createCard).mockResolvedValue()
+      vi.mocked(api.createCard).mockImplementation((card) => Promise.resolve(card))
 
       const { createCard } = useWishlistStore.getState()
 

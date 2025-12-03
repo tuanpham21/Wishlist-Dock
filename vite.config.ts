@@ -25,8 +25,8 @@ export default defineConfig({
         output: {
           globals: {},
           assetFileNames: (assetInfo) => {
-            if (assetInfo.name === 'style.css') return 'wishlist-dock.css'
-            return assetInfo.name
+            if (assetInfo.name?.includes('style.css')) return 'wishlist-dock.css'
+            return assetInfo.name || 'asset'
           }
         }
       },
