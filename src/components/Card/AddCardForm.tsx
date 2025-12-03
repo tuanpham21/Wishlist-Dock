@@ -5,6 +5,7 @@ import { Input, TextArea } from '../ui/Input';
 import { Icons } from '../ui/Icons';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { generatePlaceholderImage, generateId } from '../../utils';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 interface AddCardFormProps {
   stackId: string;
@@ -18,6 +19,9 @@ export const AddCardForm = ({ stackId, onClose }: AddCardFormProps) => {
   const [coverUrl, setCoverUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; cover?: string }>({});
+
+  // Focus trap for accessibility
+  const modalRef = useFocusTrap(true);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,17 +62,22 @@ export const AddCardForm = ({ stackId, onClose }: AddCardFormProps) => {
       onClick={onClose}
     >
       <motion.div
+        ref={modalRef}
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
         className="w-full sm:max-w-md bg-slate-900/95 border border-white/10 rounded-t-3xl sm:rounded-3xl p-6"
         onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-card-title"
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-white">Add New Card</h2>
+          <h2 id="add-card-title" className="text-xl font-semibold text-white">Add New Card</h2>
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+            aria-label="Close dialog"
           >
             <Icons.X size={20} />
           </button>

@@ -4,6 +4,7 @@ import { useWishlistStore } from '../../store/wishlistStore';
 import { StacksList } from '../Stack/StacksList';
 import { StackView } from '../Stack/StackView';
 import { Icons } from '../ui/Icons';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 
 interface DockProps {
   defaultTheme?: 'light' | 'dark';
@@ -30,7 +31,37 @@ export const Dock = ({ defaultTheme = 'dark' }: DockProps) => {
     initializeFromStorage();
     setTheme(defaultTheme);
   }, [initializeFromStorage, setTheme, defaultTheme]);
-  
+
+  // Keyboard navigation - ESC to close
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        closeDock();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, closeDock]);
+
+  // Global keyboard shortcut - Cmd/Ctrl+K to toggle dock
+  useKeyboardShortcut(
+    {
+      key: 'k',
+      metaKey: true, // Cmd on Mac
+    },
+    toggleDock
+  );
+
+  // Also support Ctrl+K for Windows/Linux
+  useKeyboardShortcut(
+    {
+      key: 'k',
+      ctrlKey: true,
+    },
+    toggleDock
+  );
+
   // Total card count for badge
   const totalCards = cards.length;
   
@@ -47,6 +78,7 @@ export const Dock = ({ defaultTheme = 'dark' }: DockProps) => {
             whileTap={{ scale: 0.95 }}
             onClick={toggleDock}
             className="fixed bottom-6 right-6 z-[9999] group"
+            aria-label={`Open wishlist dock${totalCards > 0 ? ` (${totalCards} items)` : ''}`}
           >
             <div className="relative">
               {/* Glow effect */}
@@ -83,6 +115,7 @@ export const Dock = ({ defaultTheme = 'dark' }: DockProps) => {
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black/50 z-[9998] sm:hidden"
               onClick={closeDock}
+              aria-hidden="true"
             />
             
             {/* Panel */}
@@ -91,15 +124,18 @@ export const Dock = ({ defaultTheme = 'dark' }: DockProps) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Wishlist dock"
               className={`
                 fixed z-[9999]
                 bottom-0 right-0 left-0 h-[85vh]
                 sm:bottom-6 sm:right-6 sm:left-auto sm:h-[600px] sm:w-[400px]
-                ${theme === 'dark' 
-                  ? 'bg-slate-900/95 border-white/10' 
+                ${theme === 'dark'
+                  ? 'bg-slate-900/95 border-white/10'
                   : 'bg-white/95 border-gray-200'
                 }
-                backdrop-blur-xl rounded-t-3xl sm:rounded-3xl 
+                backdrop-blur-xl rounded-t-3xl sm:rounded-3xl
                 border shadow-2xl shadow-black/20
                 flex flex-col overflow-hidden
               `}
@@ -130,6 +166,8 @@ export const Dock = ({ defaultTheme = 'dark' }: DockProps) => {
                       animate={{ rotate: 360 }}
                       transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
                       className="text-violet-400"
+                      aria-label="Syncing data"
+                      role="status"
                     >
                       <Icons.Sync size={16} />
                     </motion.div>
@@ -145,6 +183,7 @@ export const Dock = ({ defaultTheme = 'dark' }: DockProps) => {
                         : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
                       }
                     `}
+                    aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
                     title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
                   >
                     {theme === 'dark' ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
@@ -160,6 +199,7 @@ export const Dock = ({ defaultTheme = 'dark' }: DockProps) => {
                         : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
                       }
                     `}
+                    aria-label="Close wishlist dock"
                   >
                     <Icons.X size={20} />
                   </button>
@@ -181,6 +221,7 @@ export const Dock = ({ defaultTheme = 'dark' }: DockProps) => {
                       <button
                         onClick={clearError}
                         className="text-red-400 hover:text-red-300"
+                        aria-label="Close error message"
                       >
                         <Icons.X size={16} />
                       </button>

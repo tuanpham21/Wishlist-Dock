@@ -1,11 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { StackItem } from './StackItem';
-import { CreateStackForm } from './CreateStackForm';
-import { EditStackForm } from './EditStackForm';
 import { Button } from '../ui/Button';
 import { Icons } from '../ui/Icons';
+import { Loading } from '../ui/Loading';
+
+// Lazy load form modals
+const CreateStackForm = lazy(() => import('./CreateStackForm').then(m => ({ default: m.CreateStackForm })));
+const EditStackForm = lazy(() => import('./EditStackForm').then(m => ({ default: m.EditStackForm })));
 
 export const StacksList = () => {
   const {
@@ -152,17 +155,21 @@ export const StacksList = () => {
       {/* Create Stack Form */}
       <AnimatePresence>
         {isCreatingStack && (
-          <CreateStackForm onClose={() => setIsCreatingStack(false)} />
+          <Suspense fallback={<Loading fullscreen />}>
+            <CreateStackForm onClose={() => setIsCreatingStack(false)} />
+          </Suspense>
         )}
       </AnimatePresence>
 
       {/* Edit Stack Form */}
       <AnimatePresence>
         {editingStack && (
-          <EditStackForm
-            stack={editingStack}
-            onClose={() => setEditingStackId(null)}
-          />
+          <Suspense fallback={<Loading fullscreen />}>
+            <EditStackForm
+              stack={editingStack}
+              onClose={() => setEditingStackId(null)}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
     </div>

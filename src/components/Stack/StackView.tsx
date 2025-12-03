@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWishlistStore } from '../../store/wishlistStore';
-import { CardItem, MoveCardModal } from '../Card/CardItem';
-import { AddCardForm } from '../Card/AddCardForm';
-import { EditCardForm } from '../Card/EditCardForm';
-import { SwipeCards } from '../Card/SwipeCards';
+import { CardItem } from '../Card/CardItem';
 import { Button } from '../ui/Button';
 import { Icons } from '../ui/Icons';
+import { Loading } from '../ui/Loading';
+
+// Lazy load heavy components
+const SwipeCards = lazy(() => import('../Card/SwipeCards').then(m => ({ default: m.SwipeCards })));
+const AddCardForm = lazy(() => import('../Card/AddCardForm').then(m => ({ default: m.AddCardForm })));
+const EditCardForm = lazy(() => import('../Card/EditCardForm').then(m => ({ default: m.EditCardForm })));
+const MoveCardModal = lazy(() => import('../Card/CardItem').then(m => ({ default: m.MoveCardModal })));
 
 export const StackView = () => {
   const {
@@ -49,15 +53,17 @@ export const StackView = () => {
   // Swipe mode view
   if (isSwipeMode) {
     return (
-      <SwipeCards
-        cards={stackCards}
-        currentIndex={currentSwipeIndex}
-        onSwipe={() => {
-          // For now, just go to next card
-          nextCard();
-        }}
-        onExit={exitSwipeMode}
-      />
+      <Suspense fallback={<Loading fullscreen />}>
+        <SwipeCards
+          cards={stackCards}
+          currentIndex={currentSwipeIndex}
+          onSwipe={() => {
+            // For now, just go to next card
+            nextCard();
+          }}
+          onExit={exitSwipeMode}
+        />
+      </Suspense>
     );
   }
   
@@ -156,33 +162,39 @@ export const StackView = () => {
       {/* Move Card Modal */}
       <AnimatePresence>
         {movingCardId && (
-          <MoveCardModal
-            cardId={movingCardId}
-            currentStackId={activeStackId!}
-            stacks={stacks}
-            onMove={handleMoveCard}
-            onClose={() => setMovingCardId(null)}
-          />
+          <Suspense fallback={<Loading fullscreen />}>
+            <MoveCardModal
+              cardId={movingCardId}
+              currentStackId={activeStackId!}
+              stacks={stacks}
+              onMove={handleMoveCard}
+              onClose={() => setMovingCardId(null)}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
       
       {/* Add Card Form */}
       <AnimatePresence>
         {isAddingCard && activeStackId && (
-          <AddCardForm
-            stackId={activeStackId}
-            onClose={() => setIsAddingCard(false)}
-          />
+          <Suspense fallback={<Loading fullscreen />}>
+            <AddCardForm
+              stackId={activeStackId}
+              onClose={() => setIsAddingCard(false)}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
 
       {/* Edit Card Form */}
       <AnimatePresence>
         {editingCard && (
-          <EditCardForm
-            card={editingCard}
-            onClose={() => setEditingCardId(null)}
-          />
+          <Suspense fallback={<Loading fullscreen />}>
+            <EditCardForm
+              card={editingCard}
+              onClose={() => setEditingCardId(null)}
+            />
+          </Suspense>
         )}
       </AnimatePresence>
     </div>
