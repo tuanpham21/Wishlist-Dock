@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist Dock - Demo</title>
+
+    <!-- Host website styles that SHOULD NOT affect the widget -->
+    <style>
+        /* These styles demonstrate conflicts that Shadow DOM prevents */
+        * {
+            box-sizing: content-box !important;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* These would normally break the widget, but Shadow DOM prevents it */
+        button {
+            background: #ff0000 !important;
+            border: 5px solid #ffff00 !important;
+            font-size: 10px !important;
+        }
+
+        .text-white {
+            color: #ff00ff !important;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-section {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .demo-section h2 {
+            color: #fff;
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+
+        .info-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid #4ade80;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            color: #fff;
+        }
+
+        .info-box p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .info-box strong {
+            color: #4ade80;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            color: #333 !important;
+            padding: 12px 24px !important;
+            border-radius: 12px !important;
+            cursor: pointer;
+            font-size: 14px !important;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .widget-demo {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .widget-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+
+        pre {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .status {
+            background: rgba(74, 222, 128, 0.2);
+            border: 1px solid rgba(74, 222, 128, 0.5);
+            border-radius: 8px;
+            padding: 12px;
+            color: #4ade80;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+
+        .loading {
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            padding: 40px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Wishlist Dock Widget Demo</h1>
+
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Widget Theme</button>
+
+        <div class="demo-section">
+            <h2>📖 What This Demonstrates</h2>
+            <div class="info-box">
+                <p><strong>✨ Shadow DOM Isolation:</strong> The widget is completely isolated from this page's aggressive CSS styles.</p>
+                <p><strong>🎨 Theme Support:</strong> Click the toggle button to switch between light/dark themes dynamically.</p>
+                <p><strong>🔒 No CSS Conflicts:</strong> Despite hostile CSS rules (red backgrounds, yellow borders), the widget renders perfectly.</p>
+                <p><strong>📦 Embeddable:</strong> Easy to integrate into any website with a single script tag.</p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎯 Live Widget</h2>
+
+            <div class="status" id="status">⏳ Loading widget...</div>
+
+            <!-- Main Widget Demo -->
+            <div class="widget-demo">
+                <span class="widget-label">Wishlist Dock Widget</span>
+                <div class="loading" id="widget-placeholder">Loading...</div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🔧 How to Embed</h2>
+            <div class="info-box">
+                <h3 style="color: #fff; margin-top: 0;">Method 1: ES Module (Modern Browsers)</h3>
+                <pre>&lt;script type="module" src="./wishlist-dock.es.js"&gt;&lt;/script&gt;
+&lt;wishlist-dock data-theme="dark"&gt;&lt;/wishlist-dock&gt;</pre>
+
+                <h3 style="color: #fff;">Method 2: UMD (Legacy Support)</h3>
+                <pre>&lt;script src="./wishlist-dock.umd.js"&gt;&lt;/script&gt;
+&lt;wishlist-dock data-theme="light"&gt;&lt;/wishlist-dock&gt;</pre>
+
+                <h3 style="color: #fff;">Method 3: Dynamic Loading</h3>
+                <pre>&lt;script&gt;
+(function() {
+  const script = document.createElement('script');
+  script.type = 'module';
+  script.src = './wishlist-dock.es.js';
+  document.head.appendChild(script);
+
+  script.onload = () =&gt; {
+    const widget = document.createElement('wishlist-dock');
+    widget.setAttribute('data-theme', 'dark');
+    document.body.appendChild(widget);
+  };
+})();
+&lt;/script&gt;</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the widget CSS -->
+    <link rel="stylesheet" href="./wishlist-dock.css">
+
+    <!-- Load the widget -->
+    <script type="module">
+        // Try to load the built library (for preview mode)
+        let widgetLoaded = false;
+
+        // Attempt 1: Load from built files (production/preview)
+        import('./wishlist-dock.es.js')
+            .then(() => {
+                console.log('✅ Loaded from built library (preview mode)');
+                initializeWidget();
+                widgetLoaded = true;
+            })
+            .catch(() => {
+                // Attempt 2: Load from source (development mode)
+                console.log('📝 Trying development mode...');
+                import('/src/index-web-component.ts')
+                    .then(() => {
+                        console.log('✅ Loaded from source (dev mode)');
+                        initializeWidget();
+                        widgetLoaded = true;
+                    })
+                    .catch(err => {
+                        console.error('❌ Failed to load widget:', err);
+                        document.getElementById('status').innerHTML = '❌ Failed to load widget. Please build the library first: <code>pnpm run build:lib</code>';
+                        document.getElementById('status').style.background = 'rgba(239, 68, 68, 0.2)';
+                        document.getElementById('status').style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                        document.getElementById('status').style.color = '#f87171';
+                    });
+            });
+
+        function initializeWidget() {
+            // Update status
+            document.getElementById('status').innerHTML = '✅ Widget loaded successfully!';
+
+            // Create and insert the widget
+            const widgetContainer = document.querySelector('.widget-demo');
+            const placeholder = document.getElementById('widget-placeholder');
+
+            if (placeholder) {
+                placeholder.remove();
+            }
+
+            const widget = document.createElement('wishlist-dock');
+            widget.setAttribute('data-theme', 'dark');
+            widgetContainer.appendChild(widget);
+
+            console.log('✅ Widget initialized');
+        }
+
+        // Theme toggle functionality
+        window.toggleTheme = function() {
+            const widget = document.querySelector('wishlist-dock');
+            if (widget) {
+                const currentTheme = widget.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                widget.setAttribute('data-theme', newTheme);
+                console.log(`🎨 Theme switched to: ${newTheme}`);
+            }
+        };
+    </script>
+</body>
+</html>

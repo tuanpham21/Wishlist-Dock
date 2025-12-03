@@ -3,15 +3,18 @@ import type { Card as CardType, Stack } from '../../types';
 import { Icons } from '../ui/Icons';
 import { truncateText } from '../../utils';
 import { useState } from 'react';
+import { useWishlistStore } from '../../store/wishlistStore';
 
 interface CardItemProps {
   card: CardType;
   index: number;
   onDelete?: (cardId: string) => void;
   onMove?: (cardId: string) => void;
+  onEdit?: (cardId: string) => void;
 }
 
-export const CardItem = ({ card, index, onDelete, onMove }: CardItemProps) => {
+export const CardItem = ({ card, index, onDelete, onMove, onEdit }: CardItemProps) => {
+  const theme = useWishlistStore(state => state.theme);
   const [imageError, setImageError] = useState(false);
   const [showActions, setShowActions] = useState(false);
   
@@ -25,7 +28,11 @@ export const CardItem = ({ card, index, onDelete, onMove }: CardItemProps) => {
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
-      <div className="relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/10">
+      <div className={`relative overflow-hidden rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl ${
+        theme === 'dark'
+          ? 'bg-white/5 border border-white/10 hover:border-white/20 hover:shadow-violet-500/10'
+          : 'bg-white border border-gray-200 hover:border-gray-300 hover:shadow-gray-300/20'
+      }`}>
         {/* Card Image */}
         <div className="relative aspect-[4/3] overflow-hidden">
           {!imageError ? (
@@ -50,6 +57,15 @@ export const CardItem = ({ card, index, onDelete, onMove }: CardItemProps) => {
             animate={{ opacity: showActions ? 1 : 0 }}
             className="absolute top-2 right-2 flex gap-2"
           >
+            {onEdit && (
+              <button
+                onClick={() => onEdit(card.id)}
+                className="p-2 rounded-full bg-black/50 backdrop-blur-sm text-white/80 hover:text-white hover:bg-black/70 transition-all"
+                title="Edit card"
+              >
+                <Icons.Edit size={16} />
+              </button>
+            )}
             {onMove && (
               <button
                 onClick={() => onMove(card.id)}
@@ -73,11 +89,11 @@ export const CardItem = ({ card, index, onDelete, onMove }: CardItemProps) => {
         
         {/* Card Content */}
         <div className="p-4">
-          <h3 className="font-semibold text-white text-sm mb-1 line-clamp-1">
+          <h3 className={`font-semibold text-sm mb-1 line-clamp-1 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
             {card.name}
           </h3>
           {card.description && (
-            <p className="text-white/60 text-xs line-clamp-2">
+            <p className={`text-xs line-clamp-2 ${theme === 'dark' ? 'text-white/60' : 'text-gray-600'}`}>
               {truncateText(card.description, 80)}
             </p>
           )}
@@ -97,6 +113,7 @@ interface MoveCardModalProps {
 }
 
 export const MoveCardModal = ({ cardId, currentStackId, stacks, onMove, onClose }: MoveCardModalProps) => {
+  const theme = useWishlistStore(state => state.theme);
   const availableStacks = stacks.filter(s => s.id !== currentStackId);
   
   return (
@@ -111,13 +128,17 @@ export const MoveCardModal = ({ cardId, currentStackId, stacks, onMove, onClose 
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-slate-900/95 border border-white/10 rounded-2xl p-4 w-full max-w-xs"
+        className={`rounded-2xl p-4 w-full max-w-xs ${
+          theme === 'dark'
+            ? 'bg-slate-900/95 border border-white/10'
+            : 'bg-white border border-gray-200'
+        }`}
         onClick={e => e.stopPropagation()}
       >
-        <h3 className="text-white font-semibold mb-3">Move to Stack</h3>
+        <h3 className={`font-semibold mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Move to Stack</h3>
         <div className="space-y-2 max-h-48 overflow-y-auto">
           {availableStacks.length === 0 ? (
-            <p className="text-white/50 text-sm text-center py-4">No other stacks available</p>
+            <p className={`text-sm text-center py-4 ${theme === 'dark' ? 'text-white/50' : 'text-gray-500'}`}>No other stacks available</p>
           ) : (
             availableStacks.map(stack => (
               <button
@@ -126,20 +147,26 @@ export const MoveCardModal = ({ cardId, currentStackId, stacks, onMove, onClose 
                   onMove(cardId, stack.id);
                   onClose();
                 }}
-                className="w-full flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all text-left"
+                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left ${
+                  theme === 'dark'
+                    ? 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20'
+                    : 'bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300'
+                }`}
               >
                 <div
                   className="w-10 h-10 rounded-lg flex-shrink-0"
                   style={{ background: stack.cover }}
                 />
-                <span className="text-white text-sm font-medium truncate">{stack.name}</span>
+                <span className={`text-sm font-medium truncate ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{stack.name}</span>
               </button>
             ))
           )}
         </div>
         <button
           onClick={onClose}
-          className="mt-4 w-full py-2 text-white/60 hover:text-white text-sm transition-colors"
+          className={`mt-4 w-full py-2 text-sm transition-colors ${
+            theme === 'dark' ? 'text-white/60 hover:text-white' : 'text-gray-600 hover:text-gray-900'
+          }`}
         >
           Cancel
         </button>

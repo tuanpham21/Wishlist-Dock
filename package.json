@@ -6,8 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:lib": "BUILD_TARGET=library NODE_ENV=production vite build && cp public/index.html dist/index.html",
+    "build:package": "BUILD_TARGET=library NODE_ENV=production vite build && npm run build:types && cp public/index.html dist/index.html",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist --moduleResolution node",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:lib": "pnpm run build:lib && vite preview --port 4173",
+    "prepare:package": "./scripts/build-and-publish.sh"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -31,6 +36,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "tailwindcss": "^4.1.17",
+    "terser": "^5.44.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4"

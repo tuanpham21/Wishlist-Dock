@@ -1,5 +1,6 @@
 import { motion, type HTMLMotionProps } from 'framer-motion';
 import { forwardRef, type ReactNode } from 'react';
+import { useWishlistStore } from '../../store/wishlistStore';
 
 interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
   children?: ReactNode;
@@ -25,16 +26,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
+    const theme = useWishlistStore(state => state.theme);
+
     const baseStyles = `
-      inline-flex items-center justify-center gap-2 
+      inline-flex items-center justify-center gap-2
       font-medium rounded-xl transition-all duration-200
       focus:outline-none focus:ring-2 focus:ring-offset-2
       disabled:opacity-50 disabled:cursor-not-allowed
     `;
-    
-    const variants = {
+
+    const darkVariants = {
       primary: `
-        bg-gradient-to-r from-violet-500 to-purple-600 
+        bg-gradient-to-r from-violet-500 to-purple-600
         text-white shadow-lg shadow-violet-500/25
         hover:shadow-violet-500/40 hover:scale-[1.02]
         focus:ring-violet-500
@@ -50,12 +53,39 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         focus:ring-white/30
       `,
       danger: `
-        bg-gradient-to-r from-red-500 to-rose-600 
+        bg-gradient-to-r from-red-500 to-rose-600
         text-white shadow-lg shadow-red-500/25
         hover:shadow-red-500/40 hover:scale-[1.02]
         focus:ring-red-500
       `,
     };
+
+    const lightVariants = {
+      primary: `
+        bg-gradient-to-r from-violet-500 to-purple-600
+        text-white shadow-lg shadow-violet-500/25
+        hover:shadow-violet-500/40 hover:scale-[1.02]
+        focus:ring-violet-500
+      `,
+      secondary: `
+        bg-gray-100 text-gray-900
+        border border-gray-200
+        hover:bg-gray-200 hover:border-gray-300
+        focus:ring-gray-300
+      `,
+      ghost: `
+        text-gray-600 hover:text-gray-900 hover:bg-gray-100
+        focus:ring-gray-300
+      `,
+      danger: `
+        bg-gradient-to-r from-red-500 to-rose-600
+        text-white shadow-lg shadow-red-500/25
+        hover:shadow-red-500/40 hover:scale-[1.02]
+        focus:ring-red-500
+      `,
+    };
+
+    const variants = theme === 'dark' ? darkVariants : lightVariants;
     
     const sizes = {
       sm: 'px-3 py-1.5 text-xs',

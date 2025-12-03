@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { CardItem, MoveCardModal } from '../Card/CardItem';
 import { AddCardForm } from '../Card/AddCardForm';
+import { EditCardForm } from '../Card/EditCardForm';
 import { SwipeCards } from '../Card/SwipeCards';
 import { Button } from '../ui/Button';
 import { Icons } from '../ui/Icons';
@@ -22,12 +23,15 @@ export const StackView = () => {
     nextCard,
     isAddingCard,
     setIsAddingCard,
+    theme,
   } = useWishlistStore();
   
   const [movingCardId, setMovingCardId] = useState<string | null>(null);
-  
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
+
   const activeStack = stacks.find(s => s.id === activeStackId);
   const stackCards = cards.filter(c => c.stackId === activeStackId);
+  const editingCard = editingCardId ? cards.find(c => c.id === editingCardId) : null;
   
   if (!activeStack) return null;
   
@@ -60,22 +64,26 @@ export const StackView = () => {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center gap-3 p-4 border-b border-white/10">
+      <div className={`flex items-center gap-3 p-4 border-b ${theme === 'dark' ? 'border-white/10' : 'border-gray-200'}`}>
         <button
           onClick={() => setActiveStack(null)}
-          className="p-2 rounded-full hover:bg-white/10 text-white/70 hover:text-white transition-colors"
+          className={`p-2 rounded-full transition-colors ${
+            theme === 'dark'
+              ? 'hover:bg-white/10 text-white/70 hover:text-white'
+              : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
+          }`}
         >
           <Icons.ChevronLeft size={20} />
         </button>
-        
+
         <div
           className="w-10 h-10 rounded-xl flex-shrink-0"
           style={{ background: activeStack.cover }}
         />
-        
+
         <div className="flex-1 min-w-0">
-          <h2 className="text-white font-semibold truncate">{activeStack.name}</h2>
-          <p className="text-white/50 text-xs">
+          <h2 className={`font-semibold truncate ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{activeStack.name}</h2>
+          <p className={`text-xs ${theme === 'dark' ? 'text-white/50' : 'text-gray-500'}`}>
             {stackCards.length} {stackCards.length === 1 ? 'card' : 'cards'}
           </p>
         </div>
@@ -124,6 +132,7 @@ export const StackView = () => {
                   index={index}
                   onDelete={handleDeleteCard}
                   onMove={(cardId) => setMovingCardId(cardId)}
+                  onEdit={(cardId) => setEditingCardId(cardId)}
                 />
               ))}
             </AnimatePresence>
@@ -163,6 +172,16 @@ export const StackView = () => {
           <AddCardForm
             stackId={activeStackId}
             onClose={() => setIsAddingCard(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Edit Card Form */}
+      <AnimatePresence>
+        {editingCard && (
+          <EditCardForm
+            card={editingCard}
+            onClose={() => setEditingCardId(null)}
           />
         )}
       </AnimatePresence>

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import type { Stack } from '../../types';
 import { Icons } from '../ui/Icons';
 import { useState } from 'react';
+import { useWishlistStore } from '../../store/wishlistStore';
 
 interface StackItemProps {
   stack: Stack;
@@ -9,15 +10,24 @@ interface StackItemProps {
   index: number;
   onClick: () => void;
   onDelete?: (stackId: string) => void;
+  onEdit?: (stackId: string) => void;
 }
 
-export const StackItem = ({ stack, cardCount, index, onClick, onDelete }: StackItemProps) => {
-  const [showDelete, setShowDelete] = useState(false);
-  
+export const StackItem = ({ stack, cardCount, index, onClick, onDelete, onEdit }: StackItemProps) => {
+  const theme = useWishlistStore(state => state.theme);
+  const [showActions, setShowActions] = useState(false);
+
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onDelete) {
       onDelete(stack.id);
+    }
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onEdit) {
+      onEdit(stack.id);
     }
   };
   
@@ -31,10 +41,14 @@ export const StackItem = ({ stack, cardCount, index, onClick, onDelete }: StackI
       whileTap={{ scale: 0.98 }}
       className="relative group cursor-pointer"
       onClick={onClick}
-      onMouseEnter={() => setShowDelete(true)}
-      onMouseLeave={() => setShowDelete(false)}
+      onMouseEnter={() => setShowActions(true)}
+      onMouseLeave={() => setShowActions(false)}
     >
-      <div className="relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-white/20 transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/10">
+      <div className={`relative overflow-hidden rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-xl ${
+        theme === 'dark'
+          ? 'bg-white/5 border border-white/10 hover:border-white/20 hover:shadow-violet-500/10'
+          : 'bg-white border border-gray-200 hover:border-gray-300 hover:shadow-gray-300/20'
+      }`}>
         {/* Cover */}
         <div
           className="aspect-[16/9] relative"
@@ -48,18 +62,31 @@ export const StackItem = ({ stack, cardCount, index, onClick, onDelete }: StackI
             {cardCount} {cardCount === 1 ? 'card' : 'cards'}
           </div>
           
-          {/* Delete button */}
-          {onDelete && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: showDelete ? 1 : 0 }}
-              onClick={handleDelete}
-              className="absolute top-3 left-3 p-2 rounded-full bg-black/40 backdrop-blur-sm text-white/70 hover:text-red-400 hover:bg-black/60 transition-all"
-              title="Delete stack"
-            >
-              <Icons.Trash size={14} />
-            </motion.button>
-          )}
+          {/* Action buttons */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: showActions ? 1 : 0 }}
+            className="absolute top-3 left-3 flex gap-2"
+          >
+            {onEdit && (
+              <button
+                onClick={handleEdit}
+                className="p-2 rounded-full bg-black/40 backdrop-blur-sm text-white/70 hover:text-white hover:bg-black/60 transition-all"
+                title="Edit stack"
+              >
+                <Icons.Edit size={14} />
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={handleDelete}
+                className="p-2 rounded-full bg-black/40 backdrop-blur-sm text-white/70 hover:text-red-400 hover:bg-black/60 transition-all"
+                title="Delete stack"
+              >
+                <Icons.Trash size={14} />
+              </button>
+            )}
+          </motion.div>
           
           {/* Stack icon */}
           <div className="absolute bottom-3 left-3">
@@ -71,7 +98,7 @@ export const StackItem = ({ stack, cardCount, index, onClick, onDelete }: StackI
         
         {/* Content */}
         <div className="p-4">
-          <h3 className="text-white font-semibold text-sm truncate">
+          <h3 className={`font-semibold text-sm truncate ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
             {stack.name}
           </h3>
         </div>

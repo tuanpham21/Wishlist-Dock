@@ -4,32 +4,44 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Icons } from '../ui/Icons';
 import { useWishlistStore } from '../../store/wishlistStore';
+import type { Stack } from '../../types';
+import { generateCover } from '../../utils';
 
-interface CreateStackFormProps {
+interface EditStackFormProps {
+  stack: Stack;
   onClose: () => void;
 }
 
-export const CreateStackForm = ({ onClose }: CreateStackFormProps) => {
-  const createStack = useWishlistStore(state => state.createStack);
+export const EditStackForm = ({ stack, onClose }: EditStackFormProps) => {
+  const updateStack = useWishlistStore(state => state.updateStack);
   const theme = useWishlistStore(state => state.theme);
-  const [name, setName] = useState('');
+  const [name, setName] = useState(stack.name);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
+  const [error, setError] = useState('');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name.trim()) {
       setError('Stack name is required');
       return;
     }
-    
+
     setIsSubmitting(true);
-    await createStack(name.trim());
+
+    await updateStack(stack.id, {
+      name: name.trim(),
+    });
+
     setIsSubmitting(false);
     onClose();
   };
-  
+
+  const handleRegenerateCover = async () => {
+    const { cover, coverType } = generateCover();
+    await updateStack(stack.id, { cover, coverType });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -42,7 +54,7 @@ export const CreateStackForm = ({ onClose }: CreateStackFormProps) => {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
-        className={`w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 ${
+        className={`w-full sm:max-w-sm rounded-t-3xl sm:rounded-3xl p-6 ${
           theme === 'dark'
             ? 'bg-slate-900/95 border border-white/10'
             : 'bg-white border border-gray-200'
@@ -50,7 +62,7 @@ export const CreateStackForm = ({ onClose }: CreateStackFormProps) => {
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Create New Stack</h2>
+          <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Edit Stack</h2>
           <button
             onClick={onClose}
             className={`p-2 rounded-full transition-colors ${
@@ -63,23 +75,43 @@ export const CreateStackForm = ({ onClose }: CreateStackFormProps) => {
           </button>
         </div>
 
+        {/* Preview Cover */}
+        <div className="mb-4">
+          <div
+            className="w-full h-32 rounded-2xl relative overflow-hidden"
+            style={{ background: stack.cover }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute bottom-3 left-3">
+              <div className={`w-10 h-10 rounded-xl backdrop-blur-sm flex items-center justify-center ${
+                theme === 'dark' ? 'bg-white/10' : 'bg-white/30'
+              }`}>
+                <Icons.Layers size={20} className="text-white" />
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleRegenerateCover}
+            className="mt-2 text-xs text-violet-400 hover:text-violet-300 transition-colors"
+          >
+            Regenerate Cover
+          </button>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="Stack Name"
-            placeholder="e.g., Reading List, Shopping, Recipes..."
+            placeholder="Enter stack name"
             value={name}
             onChange={e => {
               setName(e.target.value);
-              setError(null);
+              setError('');
             }}
-            error={error || undefined}
+            error={error}
             autoFocus
           />
 
-          <p className={`text-xs ${theme === 'dark' ? 'text-white/40' : 'text-gray-500'}`}>
-            A cover will be automatically generated for your stack
-          </p>
-          
           <div className="flex gap-3 pt-4">
             <Button
               type="button"
@@ -94,9 +126,8 @@ export const CreateStackForm = ({ onClose }: CreateStackFormProps) => {
               variant="primary"
               className="flex-1"
               isLoading={isSubmitting}
-              leftIcon={<Icons.FolderPlus size={18} />}
             >
-              Create
+              Save Changes
             </Button>
           </div>
         </form>

@@ -134,14 +134,29 @@ export const Dock = ({ defaultTheme = 'dark' }: DockProps) => {
                       <Icons.Sync size={16} />
                     </motion.div>
                   )}
-                  
+
+                  {/* Theme toggle button */}
+                  <button
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    className={`
+                      p-2 rounded-full transition-colors
+                      ${theme === 'dark'
+                        ? 'hover:bg-white/10 text-white/60 hover:text-white'
+                        : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
+                      }
+                    `}
+                    title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                  >
+                    {theme === 'dark' ? <Icons.Sun size={18} /> : <Icons.Moon size={18} />}
+                  </button>
+
                   {/* Close button */}
                   <button
                     onClick={closeDock}
                     className={`
                       p-2 rounded-full transition-colors
-                      ${theme === 'dark' 
-                        ? 'hover:bg-white/10 text-white/60 hover:text-white' 
+                      ${theme === 'dark'
+                        ? 'hover:bg-white/10 text-white/60 hover:text-white'
                         : 'hover:bg-gray-100 text-gray-400 hover:text-gray-600'
                       }
                     `}
