@@ -60,15 +60,28 @@ function App() {
 git clone https://github.com/tuanpham21/Wishlist-Dock.git
 cd Wishlist-Dock
 pnpm install
-pnpm dev
+
+# Try the embedded widget (recommended)
+pnpm preview:lib      # Build library and start preview with demo
 
 # Available commands
 pnpm dev              # Start development server (port 3000)
-pnpm preview          # Preview production build (port 4173)
-pnpm preview:lib      # Build and preview library version
+pnpm preview          # Preview production build (default: http://localhost:4173)
 pnpm build            # Build for production
 pnpm build:lib        # Build library version
 ```
+
+After running `pnpm preview:lib`, check the terminal output for the URL and open it in your browser to see the embedded widget in action!
+
+The terminal will show something like:
+```
+➜  Local:   http://localhost:4173/
+➜  Network: http://192.168.x.x:4173/
+```
+
+Then open `http://localhost:4173/demo.html` (or the port shown in your terminal).
+
+**Note**: Vite will automatically find an available port if the default is busy.
 
 ## 📚 Documentation
 

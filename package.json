@@ -12,7 +12,7 @@
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist --moduleResolution node",
     "lint": "eslint .",
     "preview": "vite preview",
-    "preview:lib": "pnpm run build:lib && vite preview --port 4173",
+    "preview:lib": "pnpm run build:lib && vite preview",
     "prepare:package": "./scripts/build-and-publish.sh",
     "test": "vitest",
     "test:ui": "vitest --ui",

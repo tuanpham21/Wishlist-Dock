@@ -4,7 +4,7 @@ export { StacksList } from './Stack/StacksList';
 export { StackItem } from './Stack/StackItem';
 export { StackView } from './Stack/StackView';
 export { CreateStackForm } from './Stack/CreateStackForm';
-export { CardItem, MoveCardModal } from './Card/CardItem';
+export { CardItem } from './Card/CardItem';
 export { AddCardForm } from './Card/AddCardForm';
 export { SwipeCards } from './Card/SwipeCards';
 export { Button } from './ui/Button';

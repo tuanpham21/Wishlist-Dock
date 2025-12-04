@@ -58,66 +58,11 @@ class WishlistDockElement extends HTMLElement {
 
     // Mount React component after CSS is loaded
     console.log('🔄 Mounting React component in Shadow DOM...');
-    this.root = ReactDOM.createRoot(this.mountPoint);
-    this.render();
-    console.log('✅ React component mounted in Shadow DOM');
-  }
-
-  private loadStylesAsync(shadow: ShadowRoot) {
-    // Clone all existing styles from document head into shadow DOM
-    const documentStyles = document.querySelectorAll('style, link[rel="stylesheet"]');
-
-    documentStyles.forEach(styleElement => {
-      if (styleElement.tagName === 'STYLE') {
-        // Clone inline styles
-        const shadowStyle = document.createElement('style');
-        shadowStyle.textContent = styleElement.textContent;
-        shadow.appendChild(shadowStyle);
-      } else if (styleElement.tagName === 'LINK' && styleElement.getAttribute('rel') === 'stylesheet') {
-        // For external stylesheets, we'll try to fetch them
-        const href = styleElement.getAttribute('href');
-        if (href && !href.startsWith('data:')) {
-          fetch(href)
-            .then(response => {
-              if (response.ok) {
-                return response.text();
-              }
-              throw new Error(`Failed to load ${href}`);
-            })
-            .then(cssText => {
-              const shadowStyle = document.createElement('style');
-              shadowStyle.textContent = cssText;
-              shadow.appendChild(shadowStyle);
-              // Force a re-render after styles are loaded
-              this.render();
-            })
-            .catch(error => {
-              console.warn(`Could not fetch stylesheet ${href}:`, error);
-            });
-        }
-      }
-    });
-
-    // Also try to load the specific widget CSS
-    const widgetCssUrl = '/wishlist-dock.css';
-    fetch(widgetCssUrl)
-      .then(response => {
-        if (response.ok) {
-          return response.text();
-        }
-        throw new Error(`Widget CSS not found`);
-      })
-      .then(cssText => {
-        const widgetStyle = document.createElement('style');
-        widgetStyle.textContent = cssText;
-        shadow.appendChild(widgetStyle);
-        console.log('✅ Widget CSS loaded successfully');
-        // Force a re-render after styles are loaded
-        this.render();
-      })
-      .catch(error => {
-        console.warn('Could not load widget CSS:', error);
-      });
+    if (this.mountPoint) {
+      this.root = ReactDOM.createRoot(this.mountPoint);
+      this.render();
+      console.log('✅ React component mounted in Shadow DOM');
+    }
   }
 
   disconnectedCallback() {
