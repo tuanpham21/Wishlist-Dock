@@ -66,6 +66,7 @@ function App() {
 
 ### Development
 - **[Architecture](./ARCHITECTURE.md)** - Deep dive into architecture, design decisions, and technical implementation
+- **[Shadow DOM Implementation](./SHADOW_DOM.md)** - How the widget achieves style isolation and CSS loading
 - **[API Reference](./API.md)** - Complete API documentation for components, hooks, and store
 - **[Contributing Guide](./CONTRIBUTING.md)** - Development setup, coding standards, and contribution guidelines
 

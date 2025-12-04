@@ -6,7 +6,7 @@ const MIN_DELAY = 500;  // Min delay
 const MAX_DELAY = 2500;  // Max delay
 
 // Failure rate for testing optimistic UI rollback (0-1)
-const FAILURE_RATE = 0.2;  // API failure rate
+const FAILURE_RATE = 0.1;  // API failure rate
 
 const getRandomDelay = () => Math.random() * (MAX_DELAY - MIN_DELAY) + MIN_DELAY;
 

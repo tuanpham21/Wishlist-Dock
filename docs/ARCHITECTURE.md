@@ -26,17 +26,57 @@ The Wishlist Dock Widget follows a modular, feature-based architecture that emph
 │  │   Web Comp  │  │ React Component │  │   Shadow DOM │  │
 │  │   Wrapper   │  │    Core      │  │   Isolation  │  │
 │  └─────────────┘  └──────────────┘  └──────────────┘  │
+│         │                 │                 │          │
+│         │                 │                 │          │
+│         │              CSS Injection         │          │
+│         │                 │                 │          │
+│  ┌──────▼──────┐  ┌──────▼─────┐  ┌────────▼─────┐  │
+│  │ Custom      │  │ Zustand    │  │ CSS Fetcher  │  │
+│  │ Element API │  │    Store     │  │ & Injector   │  │
+│  └─────────────┘  └─────────────┘  └──────────────┘  │
 │                                                         │
 │  ┌──────────────┐  ┌─────────────┐  ┌─────────────┐   │
-│  │   Zustand    │  │   Mock API  │  │ LocalStorage │   │
-│  │    Store     │  │   Service   │  │ Persistence  │   │
+│  │   Mock API   │  │ LocalStorage │  │   Framer    │   │
+│  │   Service    │  │ Persistence  │  │   Motion    │   │
 │  └──────────────┘  └─────────────┘  └─────────────┘   │
 │                                                         │
 │  ┌──────────────┐  ┌─────────────┐  ┌─────────────┐   │
-│  │   Framer     │  │ Tailwind    │  │   Vite       │   │
-│  │   Motion     │  │    CSS      │  │   Build      │   │
+│  │ Tailwind     │  │   Vite      │  │ TypeScript  │   │
+│  │    CSS       │  │   Build     │  │   Types     │   │
 │  └──────────────┘  └─────────────┘  └─────────────┘   │
 └─────────────────────────────────────────────────────────┘
+```
+
+### Shadow DOM Implementation
+
+The widget uses Shadow DOM for complete style isolation, ensuring it doesn't conflict with host page styles. Here's how it works:
+
+1. **Element Registration**: Custom element `<wishlist-dock>` is registered as `WishlistDockElement`
+2. **Shadow DOM Creation**: On `connectedCallback`, a shadow root is created
+3. **CSS Loading**: CSS is fetched asynchronously and injected into the shadow DOM
+4. **React Rendering**: React app is rendered inside the shadow DOM with full style isolation
+
+```typescript
+// src/components/Dock/WishlistDockElement.tsx
+class WishlistDockElement extends HTMLElement {
+  connectedCallback() {
+    const shadow = this.attachShadow({ mode: 'open' });
+    const mountPoint = document.createElement('div');
+
+    // Asynchronously load and inject CSS
+    this.loadCssAndMount(styleElement);
+  }
+
+  private async loadCssAndMount(styleElement: HTMLStyleElement) {
+    // Fetch CSS and inject into Shadow DOM
+    const response = await fetch('/wishlist-dock.css');
+    styleElement.textContent = await response.text();
+
+    // Mount React after CSS is loaded
+    this.root = ReactDOM.createRoot(this.mountPoint);
+    this.render();
+  }
+}
 ```
 
 ## State Management

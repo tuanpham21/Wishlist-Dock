@@ -23,9 +23,21 @@ A beautiful, embeddable wishlist widget that allows users to organize content it
 ### Option 1: Web Component (Recommended)
 
 ```html
+<!-- Load the widget CSS first -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@your-org/wishlist-dock/dist/wishlist-dock.css" />
+
+<!-- Load the widget module -->
 <script type="module" src="https://cdn.jsdelivr.net/npm/@your-org/wishlist-dock/dist/wishlist-dock.es.js"></script>
+
+<!-- Use the widget -->
 <wishlist-dock data-theme="dark"></wishlist-dock>
 ```
+
+**Features:**
+- ✅ **Shadow DOM Isolation** - Widget styles don't conflict with your page
+- ✅ **Auto CSS Loading** - Automatically loads and injects CSS into Shadow DOM
+- ✅ **Fallback Handling** - Gracefully handles CSS loading failures
+- ✅ **Theme Support** - Switch between light and dark modes
 
 ### Option 2: React App
 
@@ -64,6 +76,7 @@ For detailed information, check out our comprehensive documentation:
 
 - **[📖 Documentation](./docs/README.md)** - Complete overview and getting started
 - **[🏗️ Architecture](./docs/ARCHITECTURE.md)** - Deep dive into technical implementation
+- **[🌗 Shadow DOM](./docs/SHADOW_DOM.md)** - Style isolation and CSS loading mechanism
 - **[📡 API Reference](./docs/API.md)** - Complete API documentation
 - **[🚀 Deployment](./docs/DEPLOYMENT.md)** - Deploy to Vercel, Netlify, AWS, or self-host
 - **[🎯 Embedding Guide](./docs/EMBEDDING.md)** - How to embed on any website
